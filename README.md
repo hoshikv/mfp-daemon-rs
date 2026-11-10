@@ -1,7 +1,7 @@
 # mfp-daemon-rs
 
 A Rust implementation of Xiaomi's `mfp-daemon` fingerprint AIDL HAL. It exposes
-the Android fingerprint interfaces, loads the legacy Goodix fingerprint HAL,
+the Android fingerprint interfaces, loads the legacy vendor fingerprint HAL,
 implements the Xiaomi extension service, and reproduces the Xiaomi FOD engine
 used for under-display fingerprint authentication.
 
@@ -11,7 +11,7 @@ development on devices you own and can recover.
 ## Target platform
 
 The implementation targets the `peridot` platform (Xiaomi `24069RA21C`) with
-Android 16 and a Goodix optical under-display sensor.
+Android 16 and an optical under-display sensor.
 
 The FOD path is enabled when:
 
@@ -243,7 +243,7 @@ Runtime threads:
 | `hal-notify` | Moves HAL callbacks from the vendor thread into the worker |
 | `fod-display` | Polls `/dev/mi_display/disp_feature` |
 | `fod-touch` | Polls `/sys/class/touch/touch_dev/fod_press_status` |
-| `fod-evdev` | Reads touch coordinates from the Goodix input device |
+| `fod-evdev` | Reads touch coordinates from the vendor touch input device |
 | `lockout-timer` | Expires timed lockout after 30 seconds |
 
 The daemon keeps one global client callback and one active session identifier,
@@ -581,7 +581,7 @@ The thread never calls the down/up path from the input device.
 
 ### Coordinates and status-bar guard
 
-The evdev monitor reads the Goodix touch device found in
+The evdev monitor reads the vendor touch device found in
 `/proc/bus/input/devices`, falling back to `/dev/input/event7`. It reads
 `ABS_MT_POSITION_X` (`0x35`) and `ABS_MT_POSITION_Y` (`0x36`) and divides each
 value by the touch-controller resolution factor from
@@ -838,3 +838,7 @@ This software talks directly to a vendor fingerprint HAL and runs as a
 privileged Android service. Use it only on devices you own and can recover.
 Incorrect installation can break fingerprint functionality or prevent the device
 from booting normally.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
